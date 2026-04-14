@@ -78,6 +78,41 @@ Example creating a 7x7 Standard game with two Battlesnakes:
 battlesnake play --width 7 --height 7 --name Snake1 --url http://snake1-url-whatever --name Snake2 --url http://snake2-url-whatever
 ```
 
+### Simulated and I2C-style URLs
+
+The CLI can also run without live HTTP servers by using transport-specific URL schemes:
+
+```
+battlesnake play \
+  --name Clocky --url 'sim://clockwise?name=Clocky&color=%23112233' \
+  --name Righty --url 'sim://right?name=Righty&color=%2300ff00'
+```
+
+Supported `sim://` move modes:
+
+* `up`
+* `down`
+* `left`
+* `right`
+* `clockwise`
+* `counterclockwise`
+
+The CLI also accepts `i2c://` URLs as a host-side stand-in for BadgeSnake transport work:
+
+```
+battlesnake play \
+  --name ZeptoA --url 'i2c://stub?addr=0x10&move=clockwise&name=ZeptoA' \
+  --name ZeptoB --url 'i2c://stub?addr=0x11&move=counterclockwise&name=ZeptoB'
+```
+
+Current `i2c://` behavior is intentionally narrow:
+
+* it preserves the Battlesnake metadata, start, move, and end request flow
+* it maps those logical endpoints onto short transport tokens internally
+* it returns deterministic simulated responses instead of touching a live I2C bus
+
+This makes the CLI useful for BadgeSnake transport development while real I2C adapters and `i2c-stub` coverage are still being wired in.
+
 ### Maps
 The `map` command provides map information for use with the `play` command.
 
