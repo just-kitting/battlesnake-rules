@@ -94,6 +94,11 @@ func handleSimulatedRequest(u *neturl.URL, method string, body io.Reader) (*http
 
 func handleSimulatedI2CRequest(u *neturl.URL, method string, body io.Reader) (*http.Response, time.Duration, error) {
 	startTime := time.Now()
+	if u.Host != "stub" {
+		res, err := handleLiveI2CRequest(u, method, body)
+		return res, time.Since(startTime), err
+	}
+
 	player, err := buildSimulatedPlayer(u, "i2c")
 	if err != nil {
 		return nil, 0, err

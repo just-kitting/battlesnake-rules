@@ -105,11 +105,20 @@ battlesnake play \
   --name ZeptoB --url 'i2c://stub?addr=0x11&move=counterclockwise&name=ZeptoB'
 ```
 
+It also accepts a live bus form that uses Linux `i2ctransfer`:
+
+```
+battlesnake play \
+  --name Zepto \
+  --url 'i2c://1?addr=0x42&max_response_len=512'
+```
+
 Current `i2c://` behavior is intentionally narrow:
 
 * it preserves the Battlesnake metadata, start, move, and end request flow
 * it maps those logical endpoints onto short transport tokens internally
-* it returns deterministic simulated responses instead of touching a live I2C bus
+* `i2c://stub...` returns deterministic simulated responses
+* `i2c://<bus>?addr=...` performs a controller write followed by a controller read using `i2ctransfer`
 
 This makes the CLI useful for BadgeSnake transport development while real I2C adapters and `i2c-stub` coverage are still being wired in.
 
